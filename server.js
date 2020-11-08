@@ -11,11 +11,9 @@ app.use(bodyParser.urlencoded({
         extended:true
     }));
  
-app.get('/', (req, res) => {
-  return res.send('Received a GET HTTP method');
-});
-
-require("./_routers/customer.js")(app);
+app.use('/customers', require("./_routers/customer.router"));
+app.use('/users', require("./_routers/user.router"));
+app.use('/bills', require("./_routers/bill.router"));
 
 app.listen(3000, ()=>{
     console.log("server running on port 3000...");

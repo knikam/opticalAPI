@@ -1,7 +1,8 @@
-const sql = require("../_config/db.connection.js");
+const connection = require("../_config/db.connection.js");
 
 const Customer = function (customer) {
-    this.name = customer.name;
+    this.first_name = customer.first_name;
+    this.last_name = customer.last_name;
     this.age = customer.age;  
     this.mobile_number = customer.mobile_number;
     this.address = customer.address;
@@ -10,7 +11,7 @@ const Customer = function (customer) {
 };
 
 Customer.create = (new_customer, result) => {
-    sql.query("INSERT INTO customer SET ?", new_customer, (err, res) => {
+    connection.query("INSERT INTO customers SET ?", new_customer, (err, res) => {
         if (err) {
             console.log("error: ", err);
             result(err, null);
@@ -25,7 +26,7 @@ Customer.create = (new_customer, result) => {
 
 Customer.findById = (customerId, result) => {
 
-    sql.query(`SELECT * FROM customer WHERE id = ${customerId}`, (err, res) => {
+    connection.query("SELECT * FROM customers WHERE id = ?",customerId, (err, res) => {
         if (err) {
             console.log("error: ", err);
             result(err, null);
@@ -46,10 +47,10 @@ Customer.findById = (customerId, result) => {
 
 Customer.getAll = result => {
 
-    sql.query("SELECT * FROM customer", (err, res) => {
+    connection.query("SELECT * FROM customers", (err, res) => {
         if (err) {
             console.log("error: ", err);
-            result(null, err);
+            result(err, null);
             return;
         }
 
@@ -60,7 +61,7 @@ Customer.getAll = result => {
 
 
 Customer.updateById = (id, customer, result) => {
-    sql.query("UPDATE customers SET name = ?, age = ?, address = ? WHERE mobile_no = ?",
+    connection.query("UPDATE customers SET name = ?, age = ?, address = ? WHERE mobile_no = ?",
     [customer.name, customer.age, customer.address, customer.mobile_no],
     (err, res) => {
         if (err) {
@@ -83,7 +84,7 @@ Customer.updateById = (id, customer, result) => {
 
 
 Customer.remove = (id, result) => {
-    sql.query("DELETE FROM customer WHERE id = ?", id, (err, res) => {
+    connection.query("DELETE FROM customers WHERE id = ?", id, (err, res) => {
         if (err) {
             console.log("error: ", err);
             result(null, err);
@@ -96,14 +97,14 @@ Customer.remove = (id, result) => {
             return;
         }
 
-        console.log("deleted customer with id: ", id);
+        console.log("deleted customers with id: ", id);
         result(null, res);
   });
 };
 
 
 Customer.removeAll = result => {
-    sql.query("DELETE FROM customer", (err, res) => {
+    connection.query("DELETE FROM customer", (err, res) => {
         if (err) {
             console.log("error: ", err);
             result(null, err);
