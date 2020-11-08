@@ -1,27 +1,26 @@
 const connection = require("../_config/db.connection");
 
 const Bill = function(bill) {
-    this.generate_date = bill.generate_date,
+
     this.delivery_date = bill.delivery_date,
-    this.type_of_lense = bill.type_of_lense,
+    this.type_of_lens = bill.type_of_lens,
     this.frame = bill.frame,
     this.total_amount = bill.total_amount,
     this.advance_amount = bill.advance_amount,
     this.balance_amount = bill.balance_amount,
-    this.create_at = bill.create_at,
+    this.create_at = new Date(),
     this.update_at = new Date()
 };
 
 Bill.create = (new_bill,result)=>{
-    
     connection.query("INSERT INTO bills SET ?",new_bill,(err, res)=>{
         if(err){
             console.log(err);
             result(err,null);
             return;
         }
-        console.log("create bill :",{id:insertId, ...new_bill});
-        result(null, {id:insertId, ...new_bill});
+        console.log("create bill :",{id: res.insertId, ...new_bill});
+        result(null, {id: res.insertId, ...new_bill});
     });
 };
 
