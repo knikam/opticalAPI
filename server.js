@@ -14,6 +14,7 @@ app.use(bodyParser.urlencoded({
 app.use('/customers', require("./_routers/customer.router"));
 app.use('/users', require("./_routers/user.router"));
 app.use('/bills', require("./_routers/bill.router"));
+app.use('/checkups', require("./_routers/checkup.router"));
 
 app.listen(3000, ()=>{
     console.log("server running on port 3000...");
