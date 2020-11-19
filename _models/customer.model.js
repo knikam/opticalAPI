@@ -8,6 +8,7 @@ const Customer = function (customer) {
     this.address = customer.address;
     this.create_at = new Date();
     this.update_at = new Date();
+    this.user_id = customer.user_id;
 };
 
 Customer.create = (new_customer, result) => {
@@ -104,15 +105,26 @@ Customer.remove = (id, result) => {
 
 
 Customer.removeAll = result => {
-    connection.query("DELETE FROM customer", (err, res) => {
+    connection.beginTransaction();
+    connection.query("DELETE FROM customers", (err, res) => {
         if (err) {
             console.log("error: ", err);
             result(null, err);
             return;
         }
 
-        console.log(`deleted ${res.affectedRows} customers`);
-        result(null, res);
+        connection.query("ALTER TABLE Persons AUTO_INCREMENT=1",(err, res)=>{
+                if(err){
+                    connection.rollback();
+                    console.log("error in auto increment:", err)
+                    result(null,err);
+                    return;
+                }
+
+                connection.commit()
+                console.log(`deleted ${res.affectedRows} customers`);
+                result(null, res);
+        })
   });
 };
 
