@@ -1,5 +1,5 @@
   var router = require('express').Router();
-  const checkups = require("../_controllers/checkup.controller.js");
+  const checkups = require("../_Checkups/checkup.controller.js");
 
   // Create a new checkup
   router.post("/", checkups.create);

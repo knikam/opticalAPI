@@ -1,4 +1,4 @@
-const connection = require("../_config/db.connection");
+const connection = require("../__Config/db.connection");
 
 const Bill = function(bill) {
 
@@ -10,6 +10,10 @@ const Bill = function(bill) {
     this.balance_amount = bill.balance_amount,
     this.create_at = new Date(),
     this.update_at = new Date()
+
+    this.user_id = bill.user_id,
+    this.customer = bill.cutomer_id,
+    this.checkup_id = bill.checkup_id
 };
 
 Bill.create = (new_bill,result)=>{
@@ -81,13 +85,30 @@ Bill.remove = (id, result)=>{
 }
 
 Bill.removeAll = result =>{
-    connection.query(`DELETE FROM bills`,(err,res)=>{
+    
+    connection.beginTransaction();
+
+    connection.query(`DELETE FROM bills`,(err, res)=>{
+        
         if(err){
             console.log("error: ", err);
             result(err, null);
             return;
         }
-        result(null,res);
+
+        connection.query("ALTER TABLE bills AUTO_INCREMENT=1",(error, result)=>{
+            
+            if(error){
+                connection.rollback();
+                console.error(error);
+                result(error, null);
+                return;
+            }
+
+            connection.commit();
+            console.log(`deleted ${res.affectedRows} customers`);
+            result(null, res);
+        });
     });
 }
 

@@ -1,4 +1,4 @@
-const connection = require("../_config/db.connection.js");
+const connection = require("../__Config/db.connection.js");
 
 const Customer = function (customer) {
     this.first_name = customer.first_name;
@@ -113,7 +113,7 @@ Customer.removeAll = result => {
             return;
         }
 
-        connection.query("ALTER TABLE Persons AUTO_INCREMENT=1",(err, res)=>{
+        connection.query("ALTER TABLE customers AUTO_INCREMENT=1",(err, res)=>{
                 if(err){
                     connection.rollback();
                     console.log("error in auto increment:", err)

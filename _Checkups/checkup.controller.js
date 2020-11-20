@@ -1,4 +1,4 @@
-const Checkup = require("../_models/checkup.model");
+const Checkup = require("../_Checkups/checkup.model");
 
 exports.create = (req, res)=>{
 

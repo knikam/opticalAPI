@@ -1,5 +1,5 @@
   var router = require('express').Router();
-  const bills = require("../_controllers/bill.controller");
+  const bills = require("../_Bills/bill.controller.js");
 
   // Create a new bill
   router.post("/", bills.create);

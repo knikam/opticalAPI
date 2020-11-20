@@ -1,4 +1,4 @@
-const connection = require("../_config/db.connection.js");
+const connection = require("../__Config/db.connection.js");
 
 const User = function(user) {
     this.name = user.name,
@@ -15,9 +15,11 @@ const User = function(user) {
 }
 
 User.create = (new_user, result)=>{
+
     connection.query("INSERT INTO users SET ?",new_user,(err, res)=>{
+        
         if(err){
-            console.log(err);
+            console.error(err);
             result(err,null);
             return;
         }
@@ -30,6 +32,7 @@ User.create = (new_user, result)=>{
 User.findById = (user_id, result) => {
 
     connection.query(`SELECT * FROM users WHERE id = ${user_id}`, (err, res) => {
+
         if (err) {
             console.log("error: ", err);
             result(err, null);
@@ -51,6 +54,7 @@ User.findById = (user_id, result) => {
 User.getAll = result => {
 
     connection.query("SELECT * FROM users", (err, res) => {
+
         if (err) {
             console.log("error: ", err);
             result(err, null);
@@ -63,9 +67,11 @@ User.getAll = result => {
 };
 
 User.updateById = (id, user, result) => {
+
     connection.query("UPDATE users SET name = ?, address = ?, email_id = ?, mobile_number = ?, shop_name = ?, update_at = ? WHERE id = ?",
     [user.name, user.address, user.email_id, user.mobile_number, user.shop_name, new Date(), id],
     (err, res) => {
+
         if (err) {
             console.log("error: ", err);
             result(null, err);
@@ -73,7 +79,6 @@ User.updateById = (id, user, result) => {
         }
 
         if (res.affectedRows == 0) {
-            // not found Customer with the id
             result({ kind: "not_found" }, null);
             return;
         }
@@ -86,7 +91,9 @@ User.updateById = (id, user, result) => {
 
 
 User.remove = (id, result) => {
+
     connection.query(`DELETE FROM users WHERE id =${id}`, (err, res) => {
+        
         if (err) {
             console.log("error: ", err);
             result(null, err);
@@ -106,16 +113,31 @@ User.remove = (id, result) => {
 
 
 User.removeAll = result => {
+    
+    connection.beginTransaction();
+
     connection.query("DELETE FROM users", (err, res) => {
-        if (err) {
+        
+        if(err) {
             console.log("error: ", err);
             result(null, err);
             return;
         }
 
-        console.log(`deleted ${res.affectedRows} customers`);
-        result(null, res);
-  });
+        connection.query("ALTER TABLE bills AUTO_INCREMENT=1",(error, result)=>{
+            
+            if(error){
+                connection.rollback();
+                console.error(error);
+                result(error, null);
+                return;
+            }
+
+            connection.commit();
+            console.log(`deleted ${res.affectedRows} users`);
+            result(null, res);
+        });
+    });
 };
 
 

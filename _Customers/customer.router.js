@@ -1,5 +1,5 @@
   var router = require('express').Router();
-  const customers = require("../_controllers/customer.controller.js");
+  const customers = require("../_Customers/customer.controller.js");
 
   // Create a new Customer
   router.post("/", customers.create);

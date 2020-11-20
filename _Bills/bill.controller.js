@@ -1,4 +1,4 @@
-const Bill = require("../_models/bill.model");
+const Bill = require("../_Bills/bill.model");
 
 exports.create = (req, res)=>{
    

@@ -11,10 +11,10 @@ app.use(bodyParser.urlencoded({
         extended:true
     }));
  
-app.use('/customers', require("./_routers/customer.router"));
-app.use('/users', require("./_routers/user.router"));
-app.use('/bills', require("./_routers/bill.router"));
-app.use('/checkups', require("./_routers/checkup.router"));
+app.use('/customers', require("./_Customers/customer.router"));
+app.use('/users', require("./_Users/user.router"));
+app.use('/bills', require("./_Bills/bill.router"));
+app.use('/checkups', require("./_Checkups/checkup.router"));
 
 app.listen(3000, ()=>{
     console.log("server running on port 3000...");

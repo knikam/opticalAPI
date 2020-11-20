@@ -1,4 +1,4 @@
-const User = require("../_models/user.model");
+const User = require("../_Users/user.model");
 
 exports.create = (req, res)=>{
     // Validate request
