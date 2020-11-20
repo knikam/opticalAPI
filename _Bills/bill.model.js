@@ -12,7 +12,7 @@ const Bill = function(bill) {
     this.update_at = new Date()
 
     this.user_id = bill.user_id,
-    this.customer = bill.cutomer_id,
+    this.customer_id = bill.customer_id,
     this.checkup_id = bill.checkup_id
 };
 
@@ -96,7 +96,7 @@ Bill.removeAll = result =>{
             return;
         }
 
-        connection.query("ALTER TABLE bills AUTO_INCREMENT=1",(error, result)=>{
+        connection.query("ALTER TABLE bills AUTO_INCREMENT=1",(error, resp)=>{
             
             if(error){
                 connection.rollback();
@@ -106,7 +106,7 @@ Bill.removeAll = result =>{
             }
 
             connection.commit();
-            console.log(`deleted ${res.affectedRows} customers`);
+            console.log(`deleted ${res.affectedRows} Bills`);
             result(null, res);
         });
     });

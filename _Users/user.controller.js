@@ -110,6 +110,6 @@ exports.deleteAll = (req, res) => {
         message:
           err.message || "Some error occurred while removing all customers."
       });
-    else res.send({ message: `All Customers were deleted successfully!` });
+    else res.send({ message: `All Users were deleted successfully!` });
   });
 };

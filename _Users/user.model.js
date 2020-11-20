@@ -124,7 +124,7 @@ User.removeAll = result => {
             return;
         }
 
-        connection.query("ALTER TABLE bills AUTO_INCREMENT=1",(error, result)=>{
+        connection.query("ALTER TABLE users AUTO_INCREMENT=1",(error, resp)=>{
             
             if(error){
                 connection.rollback();

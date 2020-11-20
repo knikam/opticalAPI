@@ -20,7 +20,7 @@ const Checkup = function (checkup) {
     this.eye_side = checkup.eye_side,
 
     this.user_id = checkup.user_id,
-    this.customer_id = customer_id
+    this.customer_id = checkup.customer_id
 };
 
 Checkup.create = (new_checkup, result)=>{
@@ -103,7 +103,7 @@ Checkup.removeAll = result =>{
             return;
         }
 
-        connection.query("ALTER TABLE checkups AUTO_INCREMENT=1",(error, result)=>{
+        connection.query("ALTER TABLE checkups AUTO_INCREMENT=1",(error, resp)=>{
             
             if(error){
                 connection.rollback();
