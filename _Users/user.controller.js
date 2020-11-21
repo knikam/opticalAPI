@@ -24,13 +24,21 @@ exports.create = (req, res) => {
 
   User.create(customer, (err, data) => {
     if (err) {
+      if (err.kind === "already_exist") {
+        res.status(500).send({
+          status: false,
+          message: "username already exist",
+        });
+        return;
+      }
+
       res.status(500).send({
         status: false,
         message:
           err.message || "Some error occurred while creating the Customer.",
       });
     } else {
-      res.send({
+      res.status(200).send({
         status: true,
         data: data,
         message: "Create user successfully.",
@@ -141,10 +149,38 @@ exports.deleteAll = (req, res) => {
           err.message || "Some error occurred while removing all customers.",
       });
     else
-      res.send({
-        status: false,
+      res.status(200).send({
+        status: true,
         data: data,
         message: `All Users were deleted successfully!`,
+      });
+  });
+};
+
+exports.validate = (req, res) => {
+  User.validate(req.body.username, req.body.password, (err, data, token) => {
+    if (err) {
+      if (err.kind === "id_not_found")
+        res.status(401).send({
+          status: false,
+          message: "username not found.",
+        });
+      if (err.kind === "password_not_found")
+        res.status(401).send({
+          status: false,
+          message: "password is incorrect.",
+        });
+      if (err.kind === "not_found")
+        res.status(401).send({
+          status: false,
+          message: "something went to wrong.",
+        });
+    } else
+      res.status(200).send({
+        status: true,
+        data: data,
+        token: token,
+        message: "Login successfully.",
       });
   });
 };

@@ -1,4 +1,7 @@
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 const connection = require("../__Config/db.connection.js");
+const config = require("../__Config/key.js");
 
 const User = function (user) {
   (this.name = user.name),
@@ -15,16 +18,42 @@ const User = function (user) {
 };
 
 User.create = (new_user, result) => {
-  connection.query("INSERT INTO users SET ?", new_user, (err, res) => {
-    if (err) {
-      console.error(err);
-      result(err, null);
-      return;
-    }
+  connection.query(
+    "select * from users where email_id='"+new_user.email_id+"' or mobile_number='"+new_user.mobile_number+"'",
+    (err, res) => {
+      if (err) {
+        console.error(err);
+        result(err, null);
+        return;
+      }
 
-    console.log("create user : ", { id: res.insertId, ...new_user });
-    result(null, { id: res.insertId, ...new_user });
-  });
+      if (res.length) {
+        console.error("Username already exist");
+        result({ kind: "already_exist" }, null);
+        return;
+      }
+
+      bcrypt.hash(new_user.password, 10, (herr, hash) => {
+        if (herr) {
+          console.error(herr);
+          result(herr, null);
+          return;
+        }
+
+        new_user.password = hash;
+        connection.query("INSERT INTO users SET ?", new_user, (err, res) => {
+          if (err) {
+            console.error(err);
+            result(err, null);
+            return;
+          }
+
+          console.log("create user : ", { id: res.insertId, ...new_user });
+          result(null, { id: res.insertId, ...new_user });
+        });
+      });
+    }
+  );
 };
 
 User.findById = (user_id, result) => {
@@ -133,5 +162,46 @@ User.removeAll = (result) => {
   });
 };
 
-User.validate = (username, password, result) => {};
+User.validate = (username, password, result) => {
+  connection.query(
+    "Select * from users where email_id='"+username+"' or mobile_number='"+username+"'",
+    (err, res) => {
+      if (err) {
+        console.error(err);
+        result(err, null, null);
+        return;
+      }
+
+      if (!res.length) {
+        result({ kind: "id_not_found" }, null, null);
+        return;
+      }
+
+      bcrypt.compare(password, res[0]["password"], (berr, bres) => {
+        if (berr) {
+          result({ kind: "password_not_found" }, null, null);
+          return;
+        }
+
+        if (bres) {
+          const token = jwt.sign(
+            {
+              username: res[0].username,
+            },
+            config.secret,
+            {
+              expiresIn: "1d",
+            }
+          );
+
+          result(null, res[0], token);
+          return;
+        }
+
+        result({ kind: "not_found" }, null, null);
+      });
+    }
+  );
+};
+
 module.exports = User;
