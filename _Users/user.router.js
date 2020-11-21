@@ -16,7 +16,7 @@ router.put("/:userId", user.update);
 // Delete a user with userId
 router.delete("/:userId", user.delete);
 
-// Create a new user
+// Delete All Users
 router.delete("/", user.deleteAll);
 
 module.exports = router;
