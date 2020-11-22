@@ -47,6 +47,34 @@ exports.create = (req, res) => {
   });
 };
 
+exports.validate = (req, res) => {
+  User.validate(req.body.username, req.body.password, (err, data, token) => {
+    if (err) {
+      if (err.kind === "id_not_found")
+        res.status(401).send({
+          status: false,
+          message: "username not found.",
+        });
+      if (err.kind === "password_not_found")
+        res.status(401).send({
+          status: false,
+          message: "password is incorrect.",
+        });
+      if (err.kind === "not_found")
+        res.status(401).send({
+          status: false,
+          message: "something went to wrong.",
+        });
+    } else
+      res.status(200).send({
+        status: true,
+        data: data,
+        token: token,
+        message: "Login successfully.",
+      });
+  });
+};
+
 exports.findAll = (req, res) => {
   User.getAll((err, data) => {
     if (err)
@@ -64,18 +92,41 @@ exports.findAll = (req, res) => {
   });
 };
 
+exports.findByUsername = (req, res) => {
+  User.findByUsername(req.params.username, (err, data) => {
+    if (err) {
+      if (err.kind == "not_found")
+        res.status(404).send({
+          status: false,
+          message: "Not found user with username" + req.params.username,
+        });
+      else
+        res.status(500).send({
+          status: false,
+          message: "Error retrieving user with username " + req.params.username,
+        });
+    } else {
+      res.send({
+        status: true,
+        data: data,
+        message: "Retrive user with username " + req.params.username,
+      });
+    }
+  });
+};
+
 exports.findOne = (req, res) => {
   User.findById(req.params.userId, (err, data) => {
     if (err) {
       if (err.kind === "not_found") {
         res.status(404).send({
           status: false,
-          message: `Not found Customer with id ${req.params.userId}.`,
+          message: `Not found user with id ${req.params.userId}.`,
         });
       } else {
         res.status(500).send({
           status: false,
-          message: "Error retrieving Customer with id " + req.params.userId,
+          message: "Error retrieving user with id " + req.params.userId,
         });
       }
     } else
@@ -157,30 +208,3 @@ exports.deleteAll = (req, res) => {
   });
 };
 
-exports.validate = (req, res) => {
-  User.validate(req.body.username, req.body.password, (err, data, token) => {
-    if (err) {
-      if (err.kind === "id_not_found")
-        res.status(401).send({
-          status: false,
-          message: "username not found.",
-        });
-      if (err.kind === "password_not_found")
-        res.status(401).send({
-          status: false,
-          message: "password is incorrect.",
-        });
-      if (err.kind === "not_found")
-        res.status(401).send({
-          status: false,
-          message: "something went to wrong.",
-        });
-    } else
-      res.status(200).send({
-        status: true,
-        data: data,
-        token: token,
-        message: "Login successfully.",
-      });
-  });
-};

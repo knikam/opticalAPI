@@ -19,7 +19,11 @@ const User = function (user) {
 
 User.create = (new_user, result) => {
   connection.query(
-    "select * from users where email_id='"+new_user.email_id+"' or mobile_number='"+new_user.mobile_number+"'",
+    "select * from users where email_id='" +
+      new_user.email_id +
+      "' or mobile_number='" +
+      new_user.mobile_number +
+      "'",
     (err, res) => {
       if (err) {
         console.error(err);
@@ -57,22 +61,50 @@ User.create = (new_user, result) => {
 };
 
 User.findById = (user_id, result) => {
-  connection.query(`SELECT * FROM users WHERE id = ${user_id}`, (err, res) => {
-    if (err) {
-      console.log("error: ", err);
-      result(err, null);
-      return;
-    }
+  connection.query(
+    "SELECT * FROM users WHERE id ='" + user_id + "'",
+    (err, res) => {
+      if (err) {
+        console.log("error: ", err);
+        result(err, null);
+        return;
+      }
 
-    if (res.length) {
-      console.log("found user: ", res[0]);
-      result(null, res[0]);
-      return;
-    }
+      if (res.length) {
+        console.log("found user: ", res[0]);
+        result(null, res[0]);
+        return;
+      }
 
-    // not found Customer with the id
-    result({ kind: "not_found" }, null);
-  });
+      result({ kind: "not_found" }, null);
+    }
+  );
+};
+
+User.findByUsername = (username, result) => {
+  connection.query(
+    "select * from users where email_id='" +
+      username +
+      "' or mobile_number='" +
+      username +
+      "'",
+    (err, res) => {
+      if (err) {
+        console.error(err);
+        result(err, null);
+        return;
+      }
+
+      if (!res.length) {
+        console.error("user not found with this username" + username);
+        result({ kind: "not_found" }, null);
+        return;
+      }
+
+      console.log("user found with username" + username);
+      result(null, res);
+    }
+  );
 };
 
 User.getAll = (result) => {
@@ -164,7 +196,11 @@ User.removeAll = (result) => {
 
 User.validate = (username, password, result) => {
   connection.query(
-    "Select * from users where email_id='"+username+"' or mobile_number='"+username+"'",
+    "Select * from users where email_id='" +
+      username +
+      "' or mobile_number='" +
+      username +
+      "'",
     (err, res) => {
       if (err) {
         console.error(err);
