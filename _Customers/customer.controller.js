@@ -43,7 +43,7 @@ exports.findAll = (req, res) => {
     else
       res.send({
         status: true,
-        data : data,
+        data: data,
         message: "Retrive all customers successfully.",
       });
   });
@@ -70,6 +70,83 @@ exports.findOne = (req, res) => {
         message: "Retrive customer " + req.params.customerId,
       });
   });
+};
+
+exports.findByContact = (req, res) => {
+  Customer.findByContact(req.params.contactId, (err, data) => {
+    if (err) {
+      if (err.kind == "not_found") {
+        res.status(404).send({
+          status: false,
+          message: "Customer not found",
+        });
+      } else {
+        res.status(404).send({
+          status: false,
+          message: err.message || "Something went to wrong",
+        });
+      }
+      return;
+    }
+
+    res.status(200).send({
+      status: true,
+      data: data,
+      message: "Retrive customer with " + req.params.contactId,
+    });
+  });
+};
+
+exports.findByName = (req, res) => {
+  Customer.findByName(req.params.name, (err, data) => {
+    if (err) {
+      if (err.kind == "not_found") {
+        res.status(404).send({
+          status: false,
+          message: "Customer not found",
+        });
+      } else {
+        res.status(404).send({
+          status: false,
+          message: err.message || "Something went to wrong",
+        });
+      }
+      return;
+    }
+    res.status(200).send({
+      status: true,
+      data: data,
+      message: "Retrive customer with " + req.params.name,
+    });
+  });
+};
+
+exports.findByDates = (req, res) => {
+  Customer.findByDates(
+    req.params.startDate,
+    req.params.endDate,
+    (err, data) => {
+      if (err) {
+        if (err.kind == "not_found") {
+          res.status(404).send({
+            status: false,
+            message: "Customer not found",
+          });
+        } else {
+          res.status(404).send({
+            status: false,
+            message: err.message || "Something went to wrong",
+          });
+        }
+        return;
+      }
+      res.status(200).send({
+        status: true,
+        data: data,
+        message: "Retrive record",
+      });
+    }
+  );
 };
 
 exports.update = (req, res) => {

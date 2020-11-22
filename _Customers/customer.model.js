@@ -47,6 +47,66 @@ Customer.findById = (customerId, result) => {
   );
 };
 
+Customer.findByContact = (contact_id, result) =>{
+  connection.query("select * from customers where mobile_number='"+contact_id+"'", (err, res)=>{
+    if(err){
+      console.error(err);
+      result(err, null);
+      return;
+    }
+
+    if(!res.length){
+      console.error("customer not find with contact");
+      result({kind:"not_found"},null);
+      return;
+    }
+
+    console.log("Find customer by id"+contact_id);
+    result(null,res);
+    
+  });
+};
+
+Customer.findByName = (name, result)=>{
+  connection.query("select * from customers where first_name like '"+name+"' or last_name like '"+name+"'", (err, res)=>{
+    if(err){
+      console.error(err);
+      result(err, null);
+      return;
+    }
+
+    if(!res.length){
+      console.error("customer not find with name");
+      result({kind:"not_found"},null);
+      return;
+    }
+
+    console.log("Find customer by name"+name);
+    result(null,res);
+    
+  });
+};
+
+Customer.findByDates = (startDate, endDate, result)=>{
+  connection.query("select * from customers where (create_at between '"+startDate+"' and '"+endDate+"')", (err, res)=>{
+    if(err){
+      console.error(err);
+      result(err, null);
+      return;
+    }
+
+    if(!res.length){
+      console.error("customer not find with dates");
+      result({kind:"not_found"},null);
+      return;
+    }
+
+    console.log("Find customer by date"+startDate);
+    result(null,res);
+    
+  });
+};
+
 Customer.getAll = (result) => {
   connection.query("SELECT * FROM customers", (err, res) => {
     if (err) {
