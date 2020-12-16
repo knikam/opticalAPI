@@ -15,7 +15,7 @@ router.get("/:userId",verifyToken.checkToken, user.findOne);
 router.put("/:userId",verifyToken.checkToken, user.update);
 
 // Delete All Users
-router.delete("/",verifyToken.checkToken, user.deleteAll);
+router.delete("/",verifyToken.checkToken, user.deleteAll);  
 
 // Delete a user with userId
 router.delete("/:userId",verifyToken.checkToken, user.delete);

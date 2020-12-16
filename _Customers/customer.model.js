@@ -122,8 +122,8 @@ Customer.getAll = (result) => {
 
 Customer.updateById = (id, customer, result) => {
   connection.query(
-    "UPDATE customers SET name = ?, age = ?, address = ? WHERE mobile_no = ?",
-    [customer.name, customer.age, customer.address, customer.mobile_no],
+    "UPDATE customers SET first_name = ?,last_name=?, age = ?, address = ?, mobile_number=? WHERE mobile_number = ?",
+    [customer.first_name,customer.last_name, customer.age, customer.address, customer.mobile_no, id],
     (err, res) => {
       if (err) {
         console.log("error: ", err);
